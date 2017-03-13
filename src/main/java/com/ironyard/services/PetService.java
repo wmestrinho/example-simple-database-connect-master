@@ -14,13 +14,13 @@ public class PetService {
      * Get Pet that matches the given id
      * @return
      */
-    public Pet getPetById(){
+    public Pet getPetById(long aPetId){
         Pet found = null;
         try {
             DbService dbService = new DbService();
             Connection con = dbService.getConnection();
             Statement s = con.createStatement();
-            ResultSet rs = s.executeQuery("SELECT * FROM helloworld.pets where pet_id= ");
+            ResultSet rs = s.executeQuery("SELECT * FROM helloworld.pets where pet_id= "+ aPetId);
 
             while (rs.next()) {
 
@@ -33,34 +33,30 @@ public class PetService {
     }
 
     public Pet save(Pet aPetToSave){
+            try {
+                DbService dbService = new DbService();
+                Connection con = dbService.getConnection();
+                PreparedStatement ps = con.prepareStatement(
+                        "INSERT INTO helloworld.pets " +
+                                "(pet_name, pet_type, pet_age, pet_own_name, pet_color) " +
+                                "VALUES (?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
+                // set values
+                ps.setString(1,aPetToSave.getName());
+                ps.setString(2,aPetToSave.getType());
+                ps.setInt(3,aPetToSave.getAge());
+                ps.setString(4,aPetToSave.getOwner());
+                ps.setString(5,aPetToSave.getColor());
+                ps.execute();
+                ResultSet rs = ps.getGeneratedKeys();
+                while(rs.next()){
+                    aPetToSave.setId(rs.getLong("pet_id"));
+                }
 
-
-
-        try {
-            DbService dbService = new DbService();
-            Connection con = dbService.getConnection();
-            PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO helloworld.pets " +
-                            "(pet_name, pet_type, pet_age, pet_own_name, pet_color) " +
-                            "VALUES (?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
-            // set values
-            ps.setString(1,aPetToSave.getName());
-            ps.setString(2,aPetToSave.getType());
-            ps.setInt(3,aPetToSave.getAge());
-            ps.setString(4,aPetToSave.getOwner());
-            ps.setString(5,aPetToSave.getColor());
-            ps.execute();
-
-            //populate id
-            ResultSet generatedKeys = ps.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                aPetToSave.getId()generatedKeys.getLong("pet_id");
+            }catch(Throwable t){
+                t.printStackTrace();
             }
-
-        }catch(Throwable t){
-            t.printStackTrace();
+            return aPetToSave;
         }
-    }
 
     /**
      * Get Pet By the name given from database

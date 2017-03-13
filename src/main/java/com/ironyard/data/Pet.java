@@ -11,6 +11,8 @@ public class Pet {
     private String type;
     private long id;
 
+    public Pet() {
+    }
 
     public Pet(String name, int age, String owner, String color, String type) {
         this.name = name;
@@ -77,7 +79,4 @@ public class Pet {
         this.type = type;
     }
 
-    public long getPetById(CharSequence sequence) {
-        return 0;
-    }
 }

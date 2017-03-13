@@ -1,10 +1,11 @@
-CREATE SEQUENCE grocery_item_id_seq
-CREATE TABLE helloworld.grocery (
+CREATE SEQUENCE grocery_id_seq;
 
-  isle INTEGER,
-  price BIGINT,
-  name varchar(26),
-  category varchar(26),
-  id BIGINT PRIMARY KEY NOT NULL
-);
-CREATE UNIQUE INDEX grocery_name_uindex ON grocery (name);
+CREATE TABLE helloworld.grocery
+(
+  id bigint NOT NULL DEFAULT nextval('grocery_id_seq'::regclass),
+  name character varying(26) COLLATE pg_catalog."default",
+  isle integer,
+  price double precision,
+  category integer,
+  CONSTRAINT items_pkey PRIMARY KEY (item_id)
+)
